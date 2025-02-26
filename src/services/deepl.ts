@@ -130,11 +130,28 @@ export class DeepL implements TranslationService {
   }
 
   async translateStrings(
-    strings: { key: string; value: string }[],
+    strings: { key: string; value: string, source?: string }[],
     from: string,
     to: string,
   ) {
     const responses: TranslationResult[] = [];
+    if (strings[0]?.source) {
+      let singleWords = strings.filter(s => s.value.split(" ").length <= 1);
+
+      for (let word of singleWords) {
+        let sameSource = singleWords.filter(w => w.source == word.source);
+
+        if (sameSource.length == 0) {
+          continue;
+        }
+  
+        responses.push(...(await this.runTranslation(sameSource, from, to)));
+  
+        singleWords = singleWords.filter(w => w.source != word.source);
+      }
+      strings = strings.filter(s => !singleWords.some(w => s.key == w.key));
+    }
+
     // Split the translation requests into batches
     // This is done because the DeepL API prevents the body of a request to be larger than 128 KiB (128 · 1024 bytes)
     // The default batch size is 1000 tokens, as this was found to almost always fit in the limit
@@ -257,7 +274,7 @@ export class DeepL implements TranslationService {
   }
 
   async runTranslation(
-    strings: { key: string; value: string }[],
+    strings: { key: string; value: string, source?: string }[],
     from: string,
     to: string,
     triesLeft: number = 5,
@@ -266,8 +283,9 @@ export class DeepL implements TranslationService {
       replaceInterpolations(s.value, this.interpolationMatcher),
     );
 
+    let cleanStr = cleaned.map((c) => c.clean);
     const body = {
-      text: cleaned.map((c) => c.clean),
+      text: strings[0]?.source ? [cleanStr.join("|")] : cleanStr,
       source_lang: from.toUpperCase(),
       target_lang: to.toUpperCase(),
       // see https://developers.deepl.com/docs/xml-and-html-handling/html
@@ -331,9 +349,17 @@ export class DeepL implements TranslationService {
     // the response is indexed similarly to the texts parameter in the body
     const responseTranslations = (await response.json()).translations;
 
-    const translated = cleaned.map(async (c, index) =>
-      reInsertInterpolations(responseTranslations[index].text, c.replacements),
-    );
+    let translated;
+    if (strings[0]?.source) {
+      let str = responseTranslations[0].text.split("|");
+      translated = str.map((s, index) =>
+        reInsertInterpolations(s, cleaned[index].replacements),
+      );
+    } else {
+      translated = cleaned.map(async (c, index) =>
+        reInsertInterpolations(responseTranslations[index].text, c.replacements),
+      );
+    }
 
     const result: TranslationResult[] = [];
 

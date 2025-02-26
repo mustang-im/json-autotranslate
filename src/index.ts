@@ -491,7 +491,8 @@ function createTranslator(
         (typeof sourceFile.content[key] == 'string' && !destinationFile?.content[key]))
       .map((key) => ({
         key,
-        value: sourceFile.type === 'key-based' ? sourceFile.content[key] : key,
+        value: sourceFile.type === 'key-based' ? sourceFile.content[key]["message"] : key,
+        source: sourceFile.type === 'key-based' ? sourceFile.content[key]["source"] : undefined,
       }));
 
     const unusedStrings = existingKeys.filter(
