@@ -16,6 +16,7 @@ export interface TranslationResult {
 export interface TString {
   key: string;
   value: string;
+  source?: string;
 }
 export interface TranslationService {
   name: string;

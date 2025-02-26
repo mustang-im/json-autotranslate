@@ -57,12 +57,7 @@ export const loadTranslations = (
         name: path.basename(f),
         originalContent: json,
         type,
-        content:
-          type === 'key-based'
-            ? flatten(require(path.resolve(directory, f)), {
-                safe: !withArrays,
-              })
-            : require(path.resolve(directory, f)),
+        content: require(path.resolve(directory, f)),
       } as TranslatableFile;
     });
 
