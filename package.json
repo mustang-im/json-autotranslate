@@ -1,7 +1,7 @@
 {
-  "name": "json-autotranslate",
+  "name": "mustang-autotranslate",
   "description": "Translate a folder of JSON files containing translations into multiple languages.",
-  "version": "1.15.1",
+  "version": "1.15.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -11,7 +11,7 @@
     "prepublishOnly": "tsc"
   },
   "author": {
-    "name": "Leo Bernard",
+    "name": "Leo Bernard, Beonex and Mustang",
     "url": "https://leolabs.org"
   },
   "keywords": [
@@ -23,9 +23,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/leolabs/json-autotranslate.git"
+    "url": "https://github.com/mustang-im/json-autotranslate.git"
   },
-  "homepage": "https://github.com/leolabs/json-autotranslate",
+  "homepage": "https://github.com/mustang-im/json-autotranslate",
   "files": [
     "lib/*"
   ],
