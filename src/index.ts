@@ -15,10 +15,10 @@ import {
   getAvailableLanguages,
   fixSourceInconsistencies,
   evaluateFilePath,
+  loadTemplate,
   FileType,
   DirectoryStructure,
   TranslatableFile,
-  loadTemplate,
 } from './util/file-system';
 import { matcherMap } from './matchers';
 
