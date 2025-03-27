@@ -256,7 +256,7 @@ ISO to Language:
   }
 
   async translateStrings(
-    strings: { key: string; value: string }[],
+    strings: { key: string; value: string, source?: string }[],
     from: string,
     to: string,
   ): Promise<TranslationResult[]> {
