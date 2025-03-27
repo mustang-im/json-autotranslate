@@ -296,6 +296,21 @@ You can select a matchers using the `-m` or `--matcher` option. If you specify
 the `--list-matchers` flag, json-autotranslate will output a list of all
 available matchers.
 
+## Context for strings
+
+Context for strings that need more context when tranlation but the for supported format is:
+
+```json
+{
+  "[id]": {
+    "string": "[message]",
+    "description": "[description]"
+  }
+}
+```
+
+Only DeepL and DeepL free are supported now.
+
 ## Available Options
 
 ```
@@ -320,6 +335,7 @@ Options:
   --decode-escapes                               decodes escaped HTML entities like &#39; into normal UTF-8 characters
   -o, --overwrite                                overwrite already present translations
   -h, --help                                     display help for command
+  --template <filename>                          template file that contains string and context for translation
 ```
 
 ## Contributing

@@ -105,7 +105,7 @@ commander
   )
   .option(
     '--template <filename>',
-    'template file for translations',
+    'template file that contains string and context for translations',
   )
   .parse(process.argv);
 
