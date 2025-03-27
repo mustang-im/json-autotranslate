@@ -102,6 +102,14 @@ commander
     '-o, --overwrite',
     'overwrite existing translations instead of skipping them',
   )
+  .option(
+    '--template <filename>',
+    'template file for translations',
+  )
+  .option(
+    '--context-field <fieldName>',
+    'field name in the template file that contains the context',
+  )
   .parse(process.argv);
 
 const translate = async (
@@ -122,6 +130,8 @@ const translate = async (
   appName?: string,
   context?: string,
   overwrite: boolean = false,
+  template?: string,
+  contextField?: string,
 ) => {
   const workingDir = path.resolve(process.cwd(), inputDir);
   const resolvedCacheDir = path.resolve(process.cwd(), cacheDir);
@@ -441,6 +451,8 @@ translate(
   commander.appName,
   commander.context,
   commander.overwrite,
+  commander.template,
+  commander.contextField,
 ).catch((e: Error) => {
   console.log();
   console.log(chalk.bgRed('An error has occurred:'));
