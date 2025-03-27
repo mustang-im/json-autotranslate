@@ -298,7 +298,7 @@ available matchers.
 
 ## Context for strings
 
-Context for strings that need more context when tranlation but the for supported format is:
+Context for strings that need more context to translate but the for supported format is:
 
 ```json
 {
