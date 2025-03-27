@@ -9,7 +9,7 @@ import * as path from 'path';
 import { diff } from 'deep-object-diff';
 import ncp from 'ncp';
 
-import { serviceMap, TranslationService } from './services';
+import { serviceMap, servicesWithContextSupport, TranslationService } from './services';
 import {
   loadTranslations,
   getAvailableLanguages,
@@ -152,8 +152,16 @@ const translate = async (
   }
 
   const translationService = serviceMap[service];
-
-  const templateFile = loadTemplate(path.join(workingDir, sourceLang, template as string));
+  
+  if (template) {
+    if (!servicesWithContextSupport.includes(service as string)) {
+      throw new Error(
+        `The service ${service} does not support templates. Please choose a different service or remove the template option.`,
+      );
+    }
+    dirStructure = 'default';
+    exclude = path.join(workingDir, sourceLang, template);
+  }
 
   const templateFilePath = evaluateFilePath(
     workingDir,
@@ -167,6 +175,18 @@ const translate = async (
     fileType,
     withArrays,
   );
+
+  if (template) {
+    if (templateFiles.length != 1) {
+      throw new Error("Template only supports one source file");
+    }
+    let sourceFile = templateFiles.pop();
+    let templateFile = loadTemplate(
+      path.join(workingDir, sourceLang, template),
+      sourceFile as TranslatableFile
+    );
+    templateFiles.push(templateFile);
+  }
 
   if (templateFiles.length === 0) {
     throw new Error(

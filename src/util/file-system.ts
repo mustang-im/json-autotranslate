@@ -12,6 +12,7 @@ export interface TranslatableFile {
   originalContent: string;
   type: FileType;
   content: object;
+  isTemplate?: boolean;
 }
 
 export const getAvailableLanguages = (
@@ -116,18 +117,25 @@ export const evaluateFilePath = (
  * }
  * ```
  */
-export function loadTemplate(filePath: string) {
+export function loadTemplate(filePath: string, sourceFile: TranslatableFile) {
   let file = fs.readFileSync(filePath).toString();
   let json = JSON.parse(file);
+  let formattedJSON = {};
   for (let key in json) {
     let entries = Object.values(json[key]);
     if (!entries[0]) {
       throw new Error("Missing string");
     }
-    json[key] = {
+    formattedJSON[key] = {
       message: entries[0],
       description: entries[1] ?? "",
     };
   }
-  return json;
+  return {
+    name: sourceFile.name,
+    originalContent: JSON.stringify(json, null, 2) + "\n",
+    type: sourceFile.type,
+    content: formattedJSON,
+    isTemplate: true,
+  } as TranslatableFile;
 }

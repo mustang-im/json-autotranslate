@@ -130,18 +130,25 @@ export class DeepL implements TranslationService {
   }
 
   async translateStrings(
-    strings: { key: string; value: string }[],
+    strings: { key: string; value: any }[],
     from: string,
     to: string,
   ) {
     const responses: TranslationResult[] = [];
+    let withoutContext = strings.filter((s) => !s.value.description);
     // Split the translation requests into batches
     // This is done because the DeepL API prevents the body of a request to be larger than 128 KiB (128 · 1024 bytes)
     // The default batch size is 1000 tokens, as this was found to almost always fit in the limit
-    for (let i = 0; i < strings.length; i += this.batchSize) {
-      const chunk = strings.slice(i, i + this.batchSize);
+    for (let i = 0; i < withoutContext.length; i += this.batchSize) {
+      const chunk = withoutContext.slice(i, i + this.batchSize);
 
       responses.push(...(await this.runTranslation(chunk, from, to)));
+    }
+    let withContext = strings.filter((s) => s.value.description);
+    for (let string of withContext) {
+      const response = await this.runTranslation([string], from, to);
+
+      responses.push(...response);
     }
     return responses;
   }
@@ -257,14 +264,23 @@ export class DeepL implements TranslationService {
   }
 
   async runTranslation(
-    strings: { key: string; value: string }[],
+    strings: { key: string; value: any }[],
     from: string,
     to: string,
     triesLeft: number = 5,
   ): Promise<TranslationResult[]> {
-    const cleaned = strings.map((s) =>
-      replaceInterpolations(s.value, this.interpolationMatcher),
-    );
+    let cleaned;
+    let hasStringContext = !!strings[0]?.value.description;
+    if (hasStringContext) {
+      if (strings.length != 1) {
+        throw new Error("Context translation only takes one string");
+      }
+      cleaned = [replaceInterpolations(strings[0].value.message)]
+    } else {
+      cleaned = strings.map((s) =>
+        replaceInterpolations(s.value, this.interpolationMatcher),
+      );
+    }
 
     const body = {
       text: cleaned.map((c) => c.clean),
@@ -300,7 +316,9 @@ export class DeepL implements TranslationService {
       body['formality'] = this.formality;
     }
 
-    if (this.context) {
+    if (hasStringContext) {
+      body['context'] = strings[0].value.description;
+    } else if (this.context) {
       // context is only added if it has been provided by as a command line argument
       body['context'] = this.context;
     }

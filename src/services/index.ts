@@ -48,6 +48,8 @@ export const serviceMap: {
   'openai': new OpenAITranslator(),
 };
 
+export const servicesWithContextSupport = ['deepl', 'deepl-free'];
+
 export interface DeepLGlossary {
   glossary_id: string;
   name: string;
