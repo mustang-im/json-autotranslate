@@ -18,6 +18,7 @@ import {
   FileType,
   DirectoryStructure,
   TranslatableFile,
+  loadTemplate,
 } from './util/file-system';
 import { matcherMap } from './matchers';
 
@@ -156,6 +157,8 @@ const translate = async (
   }
 
   const translationService = serviceMap[service];
+
+  const templateFile = loadTemplate(path.join(workingDir, sourceLang, template as string));
 
   const templateFilePath = evaluateFilePath(
     workingDir,

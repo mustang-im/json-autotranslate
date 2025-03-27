@@ -103,3 +103,31 @@ export const evaluateFilePath = (
       return path.resolve(directory);
   }
 };
+
+/**
+ * Loads the strings from the template file
+ * Must be in the format
+ * ```json
+ * {
+ *   "[id]": {
+ *    "string": "[message]",
+ *    "description": "[description]"
+ *   }
+ * }
+ * ```
+ */
+export function loadTemplate(filePath: string) {
+  let file = fs.readFileSync(filePath).toString();
+  let json = JSON.parse(file);
+  for (let key in json) {
+    let entries = Object.values(json[key]);
+    if (!entries[0]) {
+      throw new Error("Missing string");
+    }
+    json[key] = {
+      message: entries[0],
+      description: entries[1] ?? "",
+    };
+  }
+  return json;
+}
