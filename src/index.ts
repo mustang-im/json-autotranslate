@@ -9,12 +9,13 @@ import * as path from 'path';
 import { diff } from 'deep-object-diff';
 import ncp from 'ncp';
 
-import { serviceMap, TranslationService } from './services';
+import { serviceMap, servicesWithContextSupport, TranslationService } from './services';
 import {
   loadTranslations,
   getAvailableLanguages,
   fixSourceInconsistencies,
   evaluateFilePath,
+  loadTemplate,
   FileType,
   DirectoryStructure,
   TranslatableFile,
@@ -102,6 +103,10 @@ commander
     '-o, --overwrite',
     'overwrite existing translations instead of skipping them',
   )
+  .option(
+    '--template <filename>',
+    'template file that contains string and context for translations',
+  )
   .parse(process.argv);
 
 const translate = async (
@@ -122,6 +127,7 @@ const translate = async (
   appName?: string,
   context?: string,
   overwrite: boolean = false,
+  template?: string,
 ) => {
   const workingDir = path.resolve(process.cwd(), inputDir);
   const resolvedCacheDir = path.resolve(process.cwd(), cacheDir);
@@ -146,6 +152,16 @@ const translate = async (
   }
 
   const translationService = serviceMap[service];
+  
+  if (template) {
+    if (!servicesWithContextSupport.includes(service as string)) {
+      throw new Error(
+        `The service ${service} does not support templates. Please choose a different service or remove the template option.`,
+      );
+    }
+    dirStructure = 'default';
+    exclude = path.join(workingDir, sourceLang, template);
+  }
 
   const templateFilePath = evaluateFilePath(
     workingDir,
@@ -159,6 +175,18 @@ const translate = async (
     fileType,
     withArrays,
   );
+
+  if (template) {
+    if (templateFiles.length != 1) {
+      throw new Error("Template only supports one source file");
+    }
+    let sourceFile = templateFiles.pop();
+    let templateFile = loadTemplate(
+      path.join(workingDir, sourceLang, template),
+      sourceFile as TranslatableFile
+    );
+    templateFiles.push(templateFile);
+  }
 
   if (templateFiles.length === 0) {
     throw new Error(
@@ -441,6 +469,7 @@ translate(
   commander.appName,
   commander.context,
   commander.overwrite,
+  commander.template,
 ).catch((e: Error) => {
   console.log();
   console.log(chalk.bgRed('An error has occurred:'));
