@@ -278,7 +278,7 @@ export class DeepL implements TranslationService {
       cleaned = [replaceInterpolations(strings[0].value.message)]
     } else {
       cleaned = strings.map((s) =>
-        replaceInterpolations(s.value, this.interpolationMatcher),
+        replaceInterpolations(s.value.message, this.interpolationMatcher),
       );
     }
 
