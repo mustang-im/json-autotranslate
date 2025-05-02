@@ -489,7 +489,7 @@ function createTranslator(
   dirStructure: DirectoryStructure,
   deleteUnusedStrings: boolean,
   withArrays: boolean,
-  overwrite, 
+  overwrite,
 ) {
   return async (
     sourceFile: TranslatableFile,
@@ -517,8 +517,14 @@ function createTranslator(
       : [];
     const templateStrings = Object.keys(sourceFile.content);
     const stringsToTranslate = templateStrings
-      .filter((key) => overwrite || !existingKeys.includes(key) || cacheDiff.includes(key) ||
-        (typeof sourceFile.content[key] == 'string' && !destinationFile?.content[key]))
+      .filter(
+        (key) =>
+          overwrite ||
+          !existingKeys.includes(key) ||
+          cacheDiff.includes(key) ||
+          (typeof sourceFile.content[key] == 'string' &&
+            !destinationFile?.content[key]),
+      )
       .map((key) => ({
         key,
         value: sourceFile.type === 'key-based' ? sourceFile.content[key] : key,
