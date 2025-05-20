@@ -141,6 +141,8 @@ There's a `decode-escapes` options which decodes escaped HTML entities like `&#3
 2. `false` - the default option
 3. `dynamic` - which detects if there's any HTML tags present and if there is then escape because times not all strings are HTML.
 
+Note: `dynamic` option only available for DeepL at the moment.
+
 ## Available Services
 
 As of this release, json-autotranslate offers five services:
