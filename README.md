@@ -125,6 +125,22 @@ structure will be transferred over to the translated files as well.
 }
 ```
 
+## HTML Handling
+
+### HTML Tags
+
+Strings are translated by translation servcies as HTML, therefore HTML elements are handled by defualt.
+
+### HTML Entities
+
+Since strings are handled as HTML, characters like `>` would sometimes be converted to `&gt;` by the translation service.
+
+There's a `decode-escapes` options which decodes escaped HTML entities like `&#39;` into normal UTF-8 characters. And there are 3 options:
+
+1. `true`
+2. `false` - the default option
+3. `dynamic` - which detects if there's any HTML tags present and if there is then escape because times not all strings are HTML.
+
 ## Available Services
 
 As of this release, json-autotranslate offers five services:
@@ -332,7 +348,7 @@ Options:
   -f, --fix-inconsistencies                      automatically fixes inconsistent key-value pairs by setting the value to the key
   -d, --delete-unused-strings                    deletes strings in translation files that don't exist in the template
   --directory-structure <default|ngx-translate>  the locale directory structure
-  --decode-escapes                               decodes escaped HTML entities like &#39; into normal UTF-8 characters
+  --decode-escapes <true|false|dynamic>          decodes escaped HTML entities like &#39; into normal UTF-8 characters
   -o, --overwrite                                overwrite already present translations
   -h, --help                                     display help for command
   --template <filename>                          template file that contains string and context for translation
