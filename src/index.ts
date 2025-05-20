@@ -121,7 +121,7 @@ const translate = async (
   fixInconsistencies = false,
   service: keyof typeof serviceMap = 'google-translate',
   matcher: keyof typeof matcherMap = 'icu',
-  decodeEscapes: boolean | "dynamic" = false,
+  decodeEscapes: boolean | string = false,
   config?: string,
   glossariesDir?: string | boolean,
   appName?: string,
@@ -133,6 +133,10 @@ const translate = async (
   const resolvedCacheDir = path.resolve(process.cwd(), cacheDir);
   const availableLanguages = getAvailableLanguages(workingDir, dirStructure);
   const targetLanguages = availableLanguages.filter((f) => f !== sourceLang);
+
+  // Turn input into boolean
+  decodeEscapes = decodeEscapes == 'true' ? true : 
+                  decodeEscapes == 'false' ? false : decodeEscapes;
 
   if (!fs.existsSync(resolvedCacheDir)) {
     fs.mkdirSync(resolvedCacheDir);

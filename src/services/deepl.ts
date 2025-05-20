@@ -363,8 +363,8 @@ export class DeepL implements TranslationService {
       result.push({
         key: string.key,
         value: string.value,
-        translated: this.decodeEscapes == true ||
-          (this.decodeEscapes == "dynamic" && reHTMLTag.test(string.value))
+        translated: this.decodeEscapes === true ||
+          (this.decodeEscapes =="dynamic" && !reHTMLTag.test(string.value))
             ? decode(t) : t,
       });
     }
