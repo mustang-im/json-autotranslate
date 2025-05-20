@@ -22,7 +22,7 @@ export interface TranslationService {
   initialize: (
     config?: string,
     interpolationMatcher?: Matcher,
-    decodeEscapes?: boolean,
+    decodeEscapes?: boolean | 'dynamic',
     glossariesDir?: string | boolean,
     appName?: string,
     context?: string,

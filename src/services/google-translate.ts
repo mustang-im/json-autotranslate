@@ -17,7 +17,7 @@ export class GoogleTranslate implements TranslationService {
   private translate?: v2.Translate;
   private interpolationMatcher?: Matcher;
   private supportedLanguages: string[] = [];
-  private decodeEscapes?: boolean;
+  private decodeEscapes?: boolean | 'dynamic';
 
   public name = 'Google Translate';
 
@@ -32,7 +32,7 @@ export class GoogleTranslate implements TranslationService {
   async initialize(
     config?: string,
     interpolationMatcher?: Matcher,
-    decodeEscapes?: boolean,
+    decodeEscapes?: boolean | 'dynamic',
   ) {
     this.translate = new v2.Translate({
       autoRetry: true,
