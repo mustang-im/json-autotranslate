@@ -39,12 +39,12 @@ export class AzureTranslator implements TranslationService {
   private region?: string;
   private interpolationMatcher?: Matcher;
   private supportedLanguages?: Set<string>;
-  private decodeEscapes?: boolean;
+  private decodeEscapes?: boolean | 'dynamic';
 
   async initialize(
     config?: string,
     interpolationMatcher?: Matcher,
-    decodeEscapes?: boolean,
+    decodeEscapes?: boolean | 'dynamic',
   ) {
     const [apiKey, region] = config?.split(',') ?? [];
     if (!apiKey) throw new Error(`Please provide an API key for Azure.`);

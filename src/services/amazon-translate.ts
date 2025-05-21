@@ -10,7 +10,7 @@ import fs from 'fs';
 export class AmazonTranslate implements TranslationService {
   private translate?: Translate;
   private interpolationMatcher?: Matcher;
-  private decodeEscapes?: boolean;
+  private decodeEscapes?: boolean | 'dynamic';
 
   private supportedLanguages = {
     af: 'af',
@@ -95,7 +95,7 @@ export class AmazonTranslate implements TranslationService {
   async initialize(
     config?: string,
     interpolationMatcher?: Matcher,
-    decodeEscapes?: boolean,
+    decodeEscapes?: boolean | 'dynamic',
   ) {
     const configJson = config
       ? JSON.parse(fs.readFileSync(config).toString())

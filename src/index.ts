@@ -96,7 +96,7 @@ commander
     'the locale directory structure',
   )
   .option(
-    '--decode-escapes',
+    '--decode-escapes <true|false|dynamic>',
     'decodes escaped HTML entities like &#39; into normal UTF-8 characters',
   )
   .option(
@@ -121,7 +121,7 @@ const translate = async (
   fixInconsistencies = false,
   service: keyof typeof serviceMap = 'google-translate',
   matcher: keyof typeof matcherMap = 'icu',
-  decodeEscapes = false,
+  decodeEscapes: boolean | 'dynamic' = false,
   config?: string,
   glossariesDir?: string | boolean,
   appName?: string,
@@ -133,6 +133,10 @@ const translate = async (
   const resolvedCacheDir = path.resolve(process.cwd(), cacheDir);
   const availableLanguages = getAvailableLanguages(workingDir, dirStructure);
   const targetLanguages = availableLanguages.filter((f) => f !== sourceLang);
+
+  // Turn input into boolean
+  decodeEscapes = (decodeEscapes as string) == 'true' ? true : 
+                  (decodeEscapes as string) == 'false' ? false : decodeEscapes;
 
   if (!fs.existsSync(resolvedCacheDir)) {
     fs.mkdirSync(resolvedCacheDir);

@@ -16,12 +16,12 @@ export class OpenAITranslator implements TranslationService {
   private systemPrompt?: string;
   private context?: { [key: string]: string };
   private interpolationMatcher?: Matcher;
-  private decodeEscapes?: boolean;
+  private decodeEscapes?: boolean | 'dynamic';
 
   async initialize(
     config?: string,
     interpolationMatcher?: Matcher,
-    decodeEscapes?: boolean,
+    decodeEscapes?: boolean | 'dynamic',
     glossariesDir?: string | boolean,
     appName?: string,
     context?: string,

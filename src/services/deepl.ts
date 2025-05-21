@@ -2,6 +2,7 @@ import { decode } from 'html-entities';
 import fetch from 'node-fetch';
 import * as path from 'path';
 import * as fs from 'fs';
+import { reHTMLTag } from '../util/html';
 
 import { TranslationService, TranslationResult, DeepLGlossary } from '.';
 import {
@@ -25,7 +26,7 @@ export class DeepL implements TranslationService {
   private supportedLanguages?: Set<string>;
   private formalityLanguages?: Set<string>;
   private interpolationMatcher?: Matcher;
-  private decodeEscapes?: boolean;
+  private decodeEscapes?: boolean | 'dynamic';
   private formality?: 'default' | 'less' | 'more';
 
   /**
@@ -45,7 +46,7 @@ export class DeepL implements TranslationService {
   async initialize(
     config?: string,
     interpolationMatcher?: Matcher,
-    decodeEscapes?: boolean,
+    decodeEscapes?: boolean | 'dynamic',
     glossariesDir?: string | boolean,
     appName?: string,
     context?: string,
@@ -362,7 +363,9 @@ export class DeepL implements TranslationService {
       result.push({
         key: string.key,
         value: string.value,
-        translated: this.decodeEscapes ? decode(t) : t,
+        translated: this.decodeEscapes === true ||
+          (this.decodeEscapes =="dynamic" && !reHTMLTag.test(string.value))
+            ? decode(t) : t,
       });
     }
     return result;
