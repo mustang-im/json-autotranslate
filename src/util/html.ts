@@ -1,1 +1,1 @@
-export const reHTMLTag = /<\/?[a-z][\s\S]*>/i;
+export const reHTMLTag = /<\/?[a-zA-Z]+[\s\S]*>/;
