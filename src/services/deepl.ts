@@ -11,6 +11,8 @@ import {
   Matcher,
 } from '../matchers';
 
+import { sleep } from '../util/utils';
+
 export class DeepL implements TranslationService {
   public name: string;
   private apiEndpoint: string;
@@ -269,6 +271,8 @@ export class DeepL implements TranslationService {
     from: string,
     to: string,
     triesLeft: number = 5,
+    /** in seconds */
+    backoff: number = 10,
   ): Promise<TranslationResult[]> {
     let cleaned;
     let hasStringContext = !!strings[0]?.value.description;
@@ -338,7 +342,8 @@ export class DeepL implements TranslationService {
       // automatically retry the translation if DeepL rate-limits us
       // see https://support.deepl.com/hc/en-us/articles/360020710619-Error-code-429
       if (response.status === 429 && triesLeft > 0) {
-        return this.runTranslation(strings, from, to, triesLeft - 1);
+        await sleep(backoff * 1000);
+        return this.runTranslation(strings, from, to, triesLeft - 1, backoff * 2);
       }
 
       throw new Error(
