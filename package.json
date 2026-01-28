@@ -2,12 +2,13 @@
   "name": "mustang-autotranslate",
   "description": "Translate a folder of JSON files containing translations into multiple languages.",
   "version": "1.16.1",
-  "main": "index.js",
+  "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "jest",
     "build": "tsc",
+    "install": "tsc",
     "prepublishOnly": "tsc"
   },
   "author": {
