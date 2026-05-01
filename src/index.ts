@@ -135,7 +135,7 @@ const translate = async (
   const targetLanguages = availableLanguages.filter((f) => f !== sourceLang);
 
   // Turn input into boolean
-  decodeEscapes = (decodeEscapes as string) == 'true' ? true : 
+  decodeEscapes = (decodeEscapes as string) == 'true' ? true :
                   (decodeEscapes as string) == 'false' ? false : decodeEscapes;
 
   if (!fs.existsSync(resolvedCacheDir)) {
@@ -156,7 +156,7 @@ const translate = async (
   }
 
   const translationService = serviceMap[service];
-  
+
   if (template) {
     if (!servicesWithContextSupport.includes(service as string)) {
       throw new Error(
@@ -525,7 +525,7 @@ function createTranslator(
         (key) =>
           overwrite ||
           !existingKeys.includes(key) ||
-          cacheDiff.includes(key) ||
+          overwrite && cacheDiff.includes(key) ||
           (typeof sourceFile.content[key] == 'string' &&
             !destinationFile?.content[key]),
       )
