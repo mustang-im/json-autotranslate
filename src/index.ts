@@ -101,7 +101,11 @@ commander
   )
   .option(
     '-o, --overwrite',
-    'overwrite existing translations instead of skipping them',
+    'overwrite all translations',
+  )
+  .option(
+    '--keep-manual',
+    'don\'t overwrite existing translations',
   )
   .option(
     '--template <filename>',
@@ -127,6 +131,7 @@ const translate = async (
   appName?: string,
   context?: string,
   overwrite: boolean = false,
+  keepManual: boolean = false,
   template?: string,
 ) => {
   const workingDir = path.resolve(process.cwd(), inputDir);
@@ -341,6 +346,7 @@ const translate = async (
       deleteUnusedStrings,
       withArrays,
       overwrite,
+      keepManual,
     );
 
     switch (dirStructure) {
@@ -473,6 +479,7 @@ translate(
   commander.appName,
   commander.context,
   commander.overwrite,
+  commander.keepManual,
   commander.template,
 ).catch((e: Error) => {
   console.log();
@@ -493,7 +500,8 @@ function createTranslator(
   dirStructure: DirectoryStructure,
   deleteUnusedStrings: boolean,
   withArrays: boolean,
-  overwrite,
+  overwrite: boolean,
+  keepManual: boolean,
 ) {
   return async (
     sourceFile: TranslatableFile,
@@ -525,7 +533,7 @@ function createTranslator(
         (key) =>
           overwrite ||
           !existingKeys.includes(key) ||
-          overwrite && cacheDiff.includes(key) ||
+          !keepManual && cacheDiff.includes(key) ||
           (typeof sourceFile.content[key] == 'string' &&
             !destinationFile?.content[key]),
       )
