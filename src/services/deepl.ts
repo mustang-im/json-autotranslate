@@ -298,6 +298,11 @@ export class DeepL implements TranslationService {
       // set in order to indicate to DeepL that the interpolated strings that the matcher
       // replaced with `<span translate="no">${index}</span> should not be translated
       tag_handling: 'html',
+      // see https://developers.deepl.com/docs/xml-and-html-handling/tag-handling-v2
+      // use v2 for better tag handling
+      tag_handling_version: 'v2',
+      // use quality_optimized model for better translation quality
+      model_type: 'quality_optimized',
       // set to 1, because all newlines in the source text should be preserved
       split_sentences: '1',
     };
