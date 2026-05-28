@@ -334,7 +334,7 @@ Only DeepL and DeepL free are supported now.
 ```
 Options:
   -i, --input <inputDir>                         the directory containing language directories (default: ".")
-  --exclude <exclude glob>                       exclude files matching the given glob pattern
+  --exclude <exclude glob>                       exclude files and directories matching the given glob pattern
   --cache <cacheDir>                             set the cache directory (default: ".json-autotranslate-cache")
   -l, --source-language <sourceLang>             specify the source language (default: "en")
   -t, --type <key-based|natural|auto>            specify the file structure type (default: "auto")

@@ -32,7 +32,7 @@ commander
   )
   .option(
     '--exclude <exclude glob>',
-    'exclude files matching the given glob pattern',
+    'exclude files and directories matching the given glob pattern',
   )
   .option(
     '--cache <cacheDir>',
@@ -136,7 +136,7 @@ const translate = async (
 ) => {
   const workingDir = path.resolve(process.cwd(), inputDir);
   const resolvedCacheDir = path.resolve(process.cwd(), cacheDir);
-  const availableLanguages = getAvailableLanguages(workingDir, dirStructure);
+  const availableLanguages = getAvailableLanguages(workingDir, dirStructure, exclude);
   const targetLanguages = availableLanguages.filter((f) => f !== sourceLang);
 
   // Turn input into boolean
