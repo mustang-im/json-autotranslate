@@ -18,8 +18,10 @@ export interface TranslatableFile {
 export const getAvailableLanguages = (
   directory: string,
   directoryStructure: DirectoryStructure,
+  exclude?: string,
 ) => {
-  const directoryContent = fs.readdirSync(directory);
+  const directoryContent = globSync(`${directory}/*`,
+    { ignore: exclude ? `${directory}/${exclude}` : undefined });
 
   switch (directoryStructure) {
     case 'default':
